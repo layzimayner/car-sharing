@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserWithRoleDto updateRoles(RoleRequestDto requestDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can't update book with id "
+                new EntityNotFoundException("Can't update user with id "
                         + id + " because it does not exist")
         );
         user.setRoles(roleRepository.findRolesByIds(requestDto.rolesIds()));
