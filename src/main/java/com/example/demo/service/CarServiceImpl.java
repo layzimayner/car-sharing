@@ -33,7 +33,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto update(CreateCarDto createCarDto, Long id) {
         Car car = carRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can't update book with id "
+                new EntityNotFoundException("Can't update car with id "
                         + id + " because it does not exist")
                 );
         carMapper.updateCar(createCarDto, car);
@@ -44,7 +44,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto updateInventory(UpdateInventoryDto updateDto) {
         Car car = carRepository.findById(updateDto.getCarId()).orElseThrow(() ->
-                new EntityNotFoundException("Can't update book with id "
+                new EntityNotFoundException("Can't update car with id "
                         + updateDto.getCarId() + " because it does not exist")
         );
         car.setInventory(updateDto.getQuantity());
@@ -55,7 +55,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto findById(Long id) {
         Car car = carRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Can't update book with id "
+                new EntityNotFoundException("Can't find car with id "
                         + id + " because it does not exist")
         );
         return carMapper.toDto(car);
