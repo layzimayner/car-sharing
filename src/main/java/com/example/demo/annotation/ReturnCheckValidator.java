@@ -13,7 +13,7 @@ public class ReturnCheckValidator implements ConstraintValidator<ReturnCheck, Re
             return false;
         }
 
-        if (dto.actualReturnDate().equals(LocalDate.now())) {
+        if (!dto.actualReturnDate().equals(LocalDate.now())) {
             addConstraintViolation(context, "Return date must be today");
             return false;
         }

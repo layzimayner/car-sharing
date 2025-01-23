@@ -43,7 +43,7 @@ public class RentalController {
     }
 
     @GetMapping
-    @Operation(summary = "Get your rentals", description = "Return page of user's rentals")
+    @Operation(summary = "Get rentals", description = "Return page of user's rentals")
     public Page<RentalDto> getRentals(Authentication authentication, Pageable pageable,
                                       @RequestParam(value = "is_active",
                                               required = false) Boolean isActive,
