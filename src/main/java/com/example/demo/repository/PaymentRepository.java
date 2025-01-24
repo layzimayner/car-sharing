@@ -15,5 +15,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             + "WHERE u.id = :userId")
     Page<Payment> findAll(Pageable pageable, Long userId);
 
-    Optional<Payment> getPaymentBySessionId(String sessionId);
+    Optional<Payment> getPaymentByRentalId(Long rentalId);
 }

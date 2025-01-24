@@ -48,5 +48,5 @@ databaseChangeLog:
             baseColumnNames: rental_id
             referencedTableName: rentals
             referencedColumnNames: id
-            constraintName: fk_payments_rentals
+            constraintName: fk_payment_rental_id
             onDelete: CASCADE

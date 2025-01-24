@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +46,6 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     @Override
-    @Transactional
     public PaymentDto createPayment(PaymentRequestDto requestDto, UriComponentsBuilder uriComponentsBuilder)
             throws StripeException {
         Rental rental = rentalRepository.findFinishedById(requestDto.rentalId()).orElseThrow(() ->
@@ -62,46 +60,39 @@ public class PaymentServiceImpl implements PaymentService{
 
         Session session;
         try {
-            session = createStripeSession(total, uriComponentsBuilder);
+            session = createStripeSession(total, uriComponentsBuilder, rental);
         } catch (StripeException e) {
             throw new RuntimeException("Failed to create Stripe session", e);
         }
 
         payment.setSessionId(session.getId());
         payment.setSessionUrl(session.getUrl());
+        paymentRepository.save(payment);
 
         return paymentMapper.toDto(payment);
     }
 
     @Override
-    @Transactional
     public void success(Session session) {
-        Payment payment = findPayment(session.getId());
-
-        payment.setSessionId(session.getId());
-        payment.setSessionUrl(session.getUrl());
+        Payment payment = findPayment(session);
         payment.setStatus(Payment.Status.PAID);
-
         paymentRepository.save(payment);
     }
 
     @Override
     public String cancel(Session session) {
-        Payment payment = findPayment(session.getId());
-
-        payment.setSessionId(session.getId());
-        payment.setSessionUrl(session.getUrl());
+        Payment payment = findPayment(session);
         payment.setStatus(Payment.Status.CANCELED);
-
         paymentRepository.save(payment);
-
         return payment.getSessionUrl();
     }
 
-    private Payment findPayment(String sessionId) {
-        return paymentRepository.getPaymentBySessionId(sessionId).orElseThrow(() ->
-                new EntityNotFoundException("Payment with id "
-                        + sessionId + " don't exist"));
+    private Payment findPayment(Session session) {
+        Long rentalId = Long.valueOf(session.getMetadata().get("rentalId"));
+
+        return paymentRepository.getPaymentByRentalId(rentalId).orElseThrow(() ->
+                new EntityNotFoundException("Payment with rental id "
+                        + rentalId + " don't exist"));
     }
 
     private BigDecimal calculateTotalPrice(Rental rental) {
@@ -112,22 +103,21 @@ public class PaymentServiceImpl implements PaymentService{
             rentalDays = 1;
         }
 
-        BigDecimal result = dailyFee.multiply(BigDecimal.valueOf(rentalDays));
-
         long overdueDays = ChronoUnit.DAYS.between(rental.getReturnDate(), rental.getActualReturnDate());
 
         if (overdueDays > 0) {
+            rentalDays = rentalDays - overdueDays;
             BigDecimal fine = dailyFee.multiply(BigDecimal.valueOf(overdueDays))
                     .multiply(FINE_MULTIPLIER);
-            result = result.add(fine);
+            return dailyFee.multiply(BigDecimal.valueOf(rentalDays)).add(fine);
         }
-
-        return result;
+        return dailyFee.multiply(BigDecimal.valueOf(rentalDays));
     }
 
-    public Session createStripeSession(BigDecimal totalPrice, UriComponentsBuilder uriBuilder)
+    public Session createStripeSession(BigDecimal totalPrice, UriComponentsBuilder uriBuilder, Rental rental)
             throws StripeException {
         SessionCreateParams params = SessionCreateParams.builder()
+                .putMetadata("rentalId", String.valueOf(rental.getId()))
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl(uriBuilder.path("/payments/success").build().toString())
                 .setCancelUrl(uriBuilder.path("/payments/cancel").build().toString())
