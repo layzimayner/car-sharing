@@ -6,11 +6,10 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public interface PaymentService {
-    Page<PaymentDto> findAll(Long aLong, Pageable pageable);
+    Page<PaymentDto> findAll(Long userId, Pageable pageable);
 
     PaymentDto createPayment(PaymentRequestDto requestDto,
                              UriComponentsBuilder uriComponentsBuilder) throws StripeException;
@@ -18,4 +17,6 @@ public interface PaymentService {
     void success(Session session);
 
     String cancel(Session session);
+
+    PaymentDto renewPaymentSession(Long paymentId, UriComponentsBuilder uriComponentsBuilder);
 }

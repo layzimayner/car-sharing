@@ -1,9 +1,8 @@
 package com.example.demo.dto.payment;
 
 import com.example.demo.model.Payment;
-import lombok.Data;
-
 import java.math.BigDecimal;
+import lombok.Data;
 
 @Data
 public class PaymentDto {

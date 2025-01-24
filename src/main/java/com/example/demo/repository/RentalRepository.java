@@ -4,8 +4,6 @@ import com.example.demo.model.Rental;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,7 +31,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             + "AND r.id = :rentId")
     Optional<Rental> findByIdAndUserId(@Param("rentId")Long rentId, @Param("userId")Long userId);
 
-    @Query("SELECT r FROM Rental r WHERE r.returnDate < :tomorrow AND r.actualReturnDate IS NULL")
+    @Query("SELECT r FROM Rental r "
+            + "JOIN FETCH r.user u "
+            + "JOIN FETCH r.car c "
+            + "WHERE r.returnDate < :tomorrow AND r.actualReturnDate IS NULL")
     List<Rental> findOverdueRentals(@Param("tomorrow") LocalDate tomorrow);
 
     @Query("SELECT r FROM Rental r "
