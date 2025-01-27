@@ -76,5 +76,8 @@ public class User implements UserDetails {
         return !isDeleted;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }
 

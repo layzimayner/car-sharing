@@ -47,8 +47,7 @@ public class RentalServiceImpl implements RentalService {
         String message = String.format("""
                         🚗 *New Rental Created*
                         
-                        *Car*: \
-                        %s
+                        *Car*: %s
                         *User ID*: %d
                         *Rental Date*: %s
                         *Return Date*: %s""",
