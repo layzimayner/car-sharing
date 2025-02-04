@@ -54,11 +54,12 @@ public class RentalController {
         boolean isAdmin = curentUser.getRoles().stream()
                 .anyMatch(role -> role.getName().equals(Role.RoleName.ADMIN));
 
-        return rentalService.findAll(isAdmin ? userId : curentUser.getId(), pageable, isActive);
+        return rentalService.findAll(isAdmin ? userId : curentUser.getId(), pageable,
+                isActive != null ? isActive : false);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get specific rental", description = "Return rental based on id")
+    @Operation(summary = "Get a specific rental", description = "Return a rental based on id")
     public RentalDto getRentalById(Authentication authentication,
                                    @Positive @PathVariable Long id) {
         User user = (User) authentication.getPrincipal();

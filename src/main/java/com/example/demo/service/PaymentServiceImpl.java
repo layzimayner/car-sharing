@@ -14,7 +14,7 @@ import com.stripe.model.checkout.Session;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private static final BigDecimal FINE_MULTIPLIER = BigDecimal.valueOf(2.0);
     private final PaymentRepository paymentRepository;
@@ -86,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
                 user.getFullName(),
                 user.getId(),
                 rental.getRentalDate(),
-                rental.getReturnDate(),
+                rental.getActualReturnDate(),
                 payment.getTotal(),
                 "USD"
         );

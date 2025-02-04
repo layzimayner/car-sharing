@@ -26,6 +26,6 @@ public interface UserMapper {
         List<Long> rolesIds = user.getRoles().stream()
                 .map(Role::getId)
                 .toList();
-        userDto.setRolesId(rolesIds);
+        userDto.setRolesIds(rolesIds);
     }
 }

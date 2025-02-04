@@ -9,5 +9,5 @@ public class UserWithRoleDto {
     private String email;
     private String firstName;
     private String lastName;
-    private List<Long> rolesId;
+    private List<Long> rolesIds;
 }

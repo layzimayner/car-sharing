@@ -6,22 +6,28 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@AllArgsConstructor
 public class TelegramNotificationService implements NotificationService {
     private final RestTemplate restTemplate;
-    private final RentalRepository rentalRepository;
-    private final NotificationService notificationService;
+
+    @Autowired
+    private RentalRepository rentalRepository;
+
     @Value("${telegram.chat.id.member}")
     private String telegramChatIdMember;
+
     @Value("${telegram.bot.token}")
     private String botToken;
+
+    public TelegramNotificationService() {
+        this.restTemplate = new RestTemplate();
+    }
 
     @Override
     public void sendNotification(String message, Long chatId) {
@@ -41,7 +47,7 @@ public class TelegramNotificationService implements NotificationService {
 
         if (overdueRentals.isEmpty()) {
             String noOverdueMessage = "📅 No rentals overdue today!";
-            notificationService.sendNotification(noOverdueMessage,
+            this.sendNotification(noOverdueMessage,
                     Long.parseLong(telegramChatIdMember));
         } else {
             overdueRentals.forEach(rental -> {
@@ -55,7 +61,7 @@ public class TelegramNotificationService implements NotificationService {
                         rental.getCar().getModel(),
                         rental.getUser().getId(),
                         rental.getReturnDate());
-                notificationService.sendNotification(overdueMessage,
+                this.sendNotification(overdueMessage,
                         Long.parseLong(telegramChatIdMember));
             });
         }
