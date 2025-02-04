@@ -1,7 +1,7 @@
 package com.example.demo.dto.role;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
-public record RoleRequestDto(@NotBlank Set<Long> rolesIds) {
+public record RoleRequestDto(@NotNull Set<Long> rolesIds) {
 }

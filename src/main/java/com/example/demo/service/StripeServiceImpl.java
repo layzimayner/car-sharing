@@ -10,13 +10,11 @@ import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@AllArgsConstructor
 @Service
 public class StripeServiceImpl implements StripeService {
     private static final String CURRENCY = "usd";
@@ -36,7 +34,14 @@ public class StripeServiceImpl implements StripeService {
         SessionCreateParams params = SessionCreateParams.builder()
                 .putMetadata("rentalId", String.valueOf(rental.getId()))
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(uriBuilder.path("/payments/success").build().toString())
+                .setSuccessUrl(uriBuilder
+                        .scheme("http")
+                        .host("localhost")
+                        .port(8080)
+                        .path("/payments/success")
+                        .queryParam("session_id", "{CHECKOUT_SESSION_ID}")
+                        .build()
+                        .toString())
                 .setCancelUrl(uriBuilder.path("/payments/cancel").build().toString())
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
