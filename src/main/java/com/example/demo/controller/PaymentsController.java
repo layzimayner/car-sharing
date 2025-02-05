@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -84,7 +85,7 @@ public class PaymentsController {
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/{paymentId}")
+    @PutMapping("/{paymentId}")
     @Operation(summary = "Renew payment", description = "Create new session for payment")
     public PaymentDto renewPayment(@PathVariable Long paymentId,
                                                    UriComponentsBuilder uriComponentsBuilder) {
