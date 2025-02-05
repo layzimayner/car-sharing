@@ -1,4 +1,4 @@
-![Alt text](src/main/resources/screenshots/carSharing.jpg "car sharing")
+![Alt text](src/main/resources/screenshots/carSharing.webp "car sharing")
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
