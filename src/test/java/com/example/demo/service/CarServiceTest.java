@@ -6,6 +6,7 @@ import com.example.demo.dto.car.UpdateInventoryDto;
 import com.example.demo.mapper.CarMapper;
 import com.example.demo.model.Car;
 import com.example.demo.repository.CarRepository;
+import com.example.demo.service.implementation.CarServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,7 @@ public class CarServiceTest {
     @Test
     @DisplayName("Check saving service with valid request")
     void save_ValidRequest_retortDto() {
+        //Given
         Car model = createCar();
         CreateCarDto requestDto = createRequest();
         CarDto expect = createDto();
@@ -58,14 +60,17 @@ public class CarServiceTest {
         when(carMapper.toModel(requestDto)).thenReturn(model);
         when(carMapper.toDto(model)).thenReturn(expect);
 
+        //When
         CarDto actual = carService.save(requestDto);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check findAll service with valid request")
     void findAll_ValidRequest_returnPage() {
+        //Given
         Car model = createCar();
         Page<Car> page = new PageImpl<>(List.of((model)));
         CarDto expect = createDto();
@@ -73,14 +78,17 @@ public class CarServiceTest {
         when(carRepository.findAll(TEST_PAGEABLE)).thenReturn(page);
         when(carMapper.toDto(model)).thenReturn(expect);
 
+        //When
         Page<CarDto> actual = carService.findAll(TEST_PAGEABLE);
 
+        //Then
         Assertions.assertEquals(actual, new PageImpl<>(List.of(expect)));
     }
 
     @Test
     @DisplayName("Check update service with valid request")
     void update_ValidRequest_returnCarDto() {
+        //Given
         Car model = createCar();
         CarDto expect = createDto();
         CreateCarDto request = createRequest();
@@ -90,14 +98,17 @@ public class CarServiceTest {
         when(carRepository.save(model)).thenReturn(model);
         when(carMapper.toDto(model)).thenReturn(expect);
 
+        //When
         CarDto actual = carService.update(request, TEST_CAR_ID);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check updateInventory service with valid request")
     void updateInventory_ValidRequest_returnCarDto() {
+        //Given
         Car model = createCar();
         CarDto expect = createDto();
         UpdateInventoryDto request = new UpdateInventoryDto();
@@ -108,32 +119,41 @@ public class CarServiceTest {
         when(carRepository.save(model)).thenReturn(model);
         when(carMapper.toDto(model)).thenReturn(expect);
 
+        //When
         CarDto actual = carService.updateInventory(request);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check findById service with valid request")
     void findById_ValidRequest_returnCarDto() {
+        //Given
         Car model = createCar();
         CarDto expect = createDto();
 
         when(carRepository.findById(TEST_CAR_ID)).thenReturn(Optional.of(model));
         when(carMapper.toDto(model)).thenReturn(expect);
 
+        //When
         CarDto actual = carService.findById(TEST_CAR_ID);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check delete service with valid request")
     void delete_ValidRequest_returnCarDto() {
+        //Given
         when(carRepository.existsById(TEST_CAR_ID)).thenReturn(true);
         doNothing().when(carRepository).deleteById(TEST_CAR_ID);
 
+        //When
         Assertions.assertDoesNotThrow(() -> carService.delete(TEST_CAR_ID));
+
+        //Then
         verify(carRepository, times(1)).deleteById(TEST_CAR_ID);
     }
 

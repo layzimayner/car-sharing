@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,19 +73,10 @@ public class PaymentsController {
     public ResponseEntity<String> cancelPayment(@RequestParam("session_id") String sessionId)
             throws StripeException {
         Session session = Session.retrieve(sessionId);
-
-        String url = paymentService.cancel(session);
-
-        String message = String.format(
-                "Payment has been canceled. You can retry the payment"
-                        + " using the session link (%s) within the next 24 hours.",
-                url
-        );
-
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(paymentService.cancel(session));
     }
 
-    @PostMapping("/{paymentId}")
+    @PutMapping("/{paymentId}")
     @Operation(summary = "Renew payment", description = "Create new session for payment")
     public PaymentDto renewPayment(@PathVariable Long paymentId,
                                                    UriComponentsBuilder uriComponentsBuilder) {
