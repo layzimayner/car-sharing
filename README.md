@@ -49,35 +49,50 @@ This project is built using Spring Boot and uses MySQL as the database for stori
 4. **Add configuration**
    Add an env file in project folder, with next fields:
 * MYSQLDB_DATABASE - Enter the name of your MySQL database.
+
   Example: my_database
 * MYSQLDB_ROOT_PASSWORD - Enter the root password for your MySQL database.
+
   Example: rootpassword123
 * MYSQLDB_USER Specify - The username for connecting to the database.
+
   Example: db_user
 * DB_URL_ADDRESS - Provide the URL or IP address of the database server.
+
   Example: jdbc:mysql://localhost:3306/book_store
 * APPLICATION_NAME - name of your application
+
   Example: demo
 * DATASOURCE_DRIVER_NAME - Mysql driver address
+
   Example: com.mysql.cj.jdbc.Driver
 * DB_BEHAVIOR - Set type of DB behavior
+
   Example: validate
 * SHOW_SQL - Activate visibility of sql scripts
+
   Example: true
 * ACTIVATE_LIQUIBASE - Activate liquibase
+
   Example: true
 * LIQUIBASE_MASTER_FILE - Path to changelog master file
+
   Example: classpath:db/changelog/db.changelog-master.yaml
 * JWT_EXPIRATION - Token durability 
+
   Example: 3000000000
 * JWT_SECRET - Token key
-  Example: svnwi4popinvetb038ut3jkldvj3u8otjgv783uhtogpej83984gjkforefmekwvsvnwi4popinvetb038ut3jkldvj3u8otjgv783uhtog
+
+  Example: svnwi4pop...
 * BOT_TOKEN - Telegram bot token
-  Example: 8198533770:AAG-enhy9GpYqs02tHdetlSDoOSofDvwfkQ
+
+  Example: 8198533770:AAG-...
 * CHAT_MEMBER_ID - Telegram chat member id
+
   Example: 1002832454
 * STRIPE_SECRET_KEY - Stripe secret key
-  Example: sk_test_51QjIxX04Qgg9gZQ6sonoacUoRqZpNLhtdfc5hIeTvTv1jduksVxljHmc5YP5sisDA4yoG6VByciH4F2GZo4d244H00EP0fELTP
+
+  Example: sk_test_51Qj...
 
 5. **Run the project**
    ```bash
@@ -181,7 +196,7 @@ More specific endpoints include:
 
 1. Make sure you download Docker and Docker plugin
 
-2. Add new fields to env. file:
+2. Add new fields to .env file:
 * MYSQLDB_LOCAL_PORT Specify the port on your local machine for MySQL.
 
   Example: 3306
