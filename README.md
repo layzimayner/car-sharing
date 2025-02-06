@@ -47,8 +47,37 @@ This project is built using Spring Boot and uses MySQL as the database for stori
    mvn clean install
 
 4. **Add configuration**
-   Add an application.properties file to the src/main/resources directory with the following settings:
-   ![Alt text](src/main/resources/screenshots/application.properties.png "properties sample")
+   Add an env file in project folder, with next fields:
+* MYSQLDB_DATABASE - Enter the name of your MySQL database.
+  Example: my_database
+* MYSQLDB_ROOT_PASSWORD - Enter the root password for your MySQL database.
+  Example: rootpassword123
+* MYSQLDB_USER Specify - The username for connecting to the database.
+  Example: db_user
+* DB_URL_ADDRESS - Provide the URL or IP address of the database server.
+  Example: jdbc:mysql://localhost:3306/book_store
+* APPLICATION_NAME - name of your application
+  Example: demo
+* DATASOURCE_DRIVER_NAME - Mysql driver address
+  Example: com.mysql.cj.jdbc.Driver
+* DB_BEHAVIOR - Set type of DB behavior
+  Example: validate
+* SHOW_SQL - Activate visibility of sql scripts
+  Example: true
+* ACTIVATE_LIQUIBASE - Activate liquibase
+  Example: true
+* LIQUIBASE_MASTER_FILE - Path to changelog master file
+  Example: classpath:db/changelog/db.changelog-master.yaml
+* JWT_EXPIRATION - Token durability 
+  Example: 3000000000
+* JWT_SECRET - Token key
+  Example: svnwi4popinvetb038ut3jkldvj3u8otjgv783uhtogpej83984gjkforefmekwvsvnwi4popinvetb038ut3jkldvj3u8otjgv783uhtog
+* BOT_TOKEN - Telegram bot token
+  Example: 8198533770:AAG-enhy9GpYqs02tHdetlSDoOSofDvwfkQ
+* CHAT_MEMBER_ID - Telegram chat member id
+  Example: 1002832454
+* STRIPE_SECRET_KEY - Stripe secret key
+  Example: sk_test_51QjIxX04Qgg9gZQ6sonoacUoRqZpNLhtdfc5hIeTvTv1jduksVxljHmc5YP5sisDA4yoG6VByciH4F2GZo4d244H00EP0fELTP
 
 5. **Run the project**
    ```bash
@@ -116,19 +145,15 @@ Core Technologies:
 
 ## Postman and Swagger
 
-The inclusion of Swagger provides the ability to interactively
-test how the application works(http://localhost:8080/swagger-ui.html). You can create a new user
-without administrator rights, or use an existing one with extended rights or not
-(email = admin@example.com, password = admin; email = user@exampl.com, password = user).
-Also, use the user's data in Postman.Here are the instructions for importing a Postman collection:
+The inclusion of Swagger provides the ability to interactively  
+test how the application works ([Swagger UI](http://localhost:8080/swagger-ui.html)).  
+You can create a new user without administrator rights, or use an existing one  
+with extended rights or not:
+- **Admin**: email = `admin@example.com`, password = `admin`
+- **User**: email = `user@example.com`, password = `user`
 
-1. Go to Postman using the provided link(https://www.postman.com/).
-2. Click on Import in the Postman interface.
-   ![Alt text](src/main/resources/screenshots/selectImport.png "Select import")
-3. Select the option to upload a file.
-   ![Alt text](src/main/resources/screenshots/selectImportOption.png "Select import option")
-4. Locate the desired file using the path:
-   car-sharing\src\main\resources\car_sharing.postman_collection.json
+Also, use the user's data in Postman. Here are the 
+[instructions for importing a Postman collection](POSTMAN_COLLECTION.md).
 
 In addition to standard controller endpoints like delete, create, update, find by ID, and get all,
 the project also includes publicly accessible endpoints such as:
@@ -156,19 +181,7 @@ More specific endpoints include:
 
 1. Make sure you download Docker and Docker plugin
 
-2. Create env. file in project folder, with next fields:
-* MYSQLDB_DATABASE - Enter the name of your MySQL database.
-
-  Example: my_database
-* MYSQLDB_ROOT_PASSWORD - Enter the root password for your MySQL database.
-
-  Example: rootpassword123
-* MYSQLDB_USER Specify - the username for connecting to the database.
-
-  Example: db_user
-* DB_URL_ADDRESS - Provide the URL or IP address of the database server.
-
-  Example: jdbc:mysql://localhost:3306/book_store
+2. Add new fields to env. file:
 * MYSQLDB_LOCAL_PORT Specify the port on your local machine for MySQL.
 
   Example: 3306

@@ -96,6 +96,7 @@ public class UserControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of ProfileInfo method")
     void updateProfileInfo_ValidData_UserRegistrationDto() throws Exception {
+        //Given
         User user = createUser();
 
         UserRegistrationRequestDto requestDto = createRequest();
@@ -104,6 +105,7 @@ public class UserControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/users")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -115,6 +117,7 @@ public class UserControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         UserRegistrationDto actualResponse = objectMapper.readValue(jsonResponse, UserRegistrationDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
         Assertions.assertEquals(expected, actualResponse);
     }
@@ -125,10 +128,12 @@ public class UserControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of ProfileInfo method")
     void getProfileInfo_ValidData_UserRegistrationDto() throws Exception {
+        //Given
         User user = createUser();
 
         UserRegistrationDto expected = createDto();
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/users")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -139,6 +144,7 @@ public class UserControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         UserRegistrationDto actualResponse = objectMapper.readValue(jsonResponse, UserRegistrationDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
         Assertions.assertEquals(expected, actualResponse);
     }
@@ -149,6 +155,7 @@ public class UserControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of updateProfileInfo method")
     void updateRoles_ValidData_UserWithRoleDto() throws Exception {
+        //Given
         RoleRequestDto requestDto = new RoleRequestDto(Set.of(1L, 2L));
 
         UserWithRoleDto expected = new UserWithRoleDto();
@@ -160,6 +167,7 @@ public class UserControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/users/{id}", TEST_USER_ID)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -169,8 +177,10 @@ public class UserControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         UserWithRoleDto actualResponse = objectMapper.readValue(jsonResponse, UserWithRoleDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
-        EqualsBuilder.reflectionEquals(expected, actualResponse, "rolesIds");
+        Assertions.assertTrue(EqualsBuilder.reflectionEquals(expected,
+                actualResponse, "rolesIds"));
     }
 
     private UserRegistrationDto createDto() {

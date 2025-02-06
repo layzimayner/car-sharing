@@ -9,6 +9,7 @@ import com.example.demo.model.Rental;
 import com.example.demo.model.User;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.RentalRepository;
+import com.example.demo.service.implementation.PaymentServiceImpl;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import java.math.BigDecimal;
@@ -77,6 +78,7 @@ public class PaymentServiceTest {
     @Test
     @DisplayName("Check findAll service with valid request")
     void findAll_ValidRequest_returnPage() {
+        //Given
         Payment model = createModel();
         Page<Payment> page = new PageImpl<>(List.of((model)));
         Page<PaymentDto> expect = new PageImpl<>(List.of((createDto())));
@@ -84,14 +86,17 @@ public class PaymentServiceTest {
         when(paymentRepository.findAll(TEST_PAGEABLE, TEST_USER_ID)).thenReturn(page);
         when(paymentMapper.toDto(model)).thenReturn(createDto());
 
+        //When
         Page<PaymentDto> actual = paymentService.findAll(TEST_USER_ID, TEST_PAGEABLE);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check createPayment service with valid request")
     void createPayment_ValidRequest_returnPaymentDto() throws StripeException {
+        //Given
         Payment model = createModel();
         PaymentRequestDto request = createRequest();
         PaymentDto expect = createDto();
@@ -106,8 +111,10 @@ public class PaymentServiceTest {
         when(paymentMapper.toDto(any())).thenReturn(expect);
         when(paymentRepository.save(any())).thenReturn(model);
 
+        //When
         PaymentDto actualPaymentDto = paymentService.createPayment(request, uriComponentsBuilder);
 
+        //Then
         Assertions.assertNotNull(actualPaymentDto);
         Assertions.assertEquals(expect, actualPaymentDto);
     }
@@ -115,22 +122,28 @@ public class PaymentServiceTest {
     @Test
     @DisplayName("Check cancel service with valid request")
     void cancel_ValidRequest_ReturnUrl() {
+        //Given
         Payment model = createModel();
         Session session = createSession();
         Payment.Status expectedStatus = Payment.Status.CANCELED;
+        String expectedMessage = "Payment has been canceled. You can retry the payment"
+                + " using the session link (" + TEST_PAYMENT_SESSION_URL + ") within the next 24 hours.";
 
         when(paymentRepository.findBySessionId(any())).thenReturn(Optional.of(model));
         when(paymentRepository.save(any())).thenReturn(model);
 
-        String actualUrl = paymentService.cancel(session);
+        //When
+        String actualMessage = paymentService.cancel(session);
 
+        //Then
         Assertions.assertEquals(expectedStatus, model.getStatus());
-        Assertions.assertEquals(TEST_PAYMENT_SESSION_URL, actualUrl);
+        Assertions.assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     @DisplayName("Check renewPaymentSession service with valid request")
     void renewPaymentSession_ValidRequest_ReturnDto() throws StripeException {
+        //Given
         Payment model = createModel();
         model.setStatus(Payment.Status.EXPIRED);
         Session session = createSession();
@@ -143,8 +156,10 @@ public class PaymentServiceTest {
         when(paymentRepository.save(any())).thenReturn(model);
         when(paymentMapper.toDto(any())).thenReturn(expected);
 
+        //When
         PaymentDto actual = paymentService.renewPaymentSession(TEST_PAYMENT_ID,uriComponentsBuilder);
 
+        //Then
         Assertions.assertEquals(expectedStatus, model.getStatus());
         Assertions.assertEquals(expected, actual);
     }

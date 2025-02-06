@@ -73,16 +73,7 @@ public class PaymentsController {
     public ResponseEntity<String> cancelPayment(@RequestParam("session_id") String sessionId)
             throws StripeException {
         Session session = Session.retrieve(sessionId);
-
-        String url = paymentService.cancel(session);
-
-        String message = String.format(
-                "Payment has been canceled. You can retry the payment"
-                        + " using the session link (%s) within the next 24 hours.",
-                url
-        );
-
-        return ResponseEntity.ok(message);
+        return ResponseEntity.ok(paymentService.cancel(session));
     }
 
     @PutMapping("/{paymentId}")

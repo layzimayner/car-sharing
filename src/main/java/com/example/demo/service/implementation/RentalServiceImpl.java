@@ -1,15 +1,18 @@
-package com.example.demo.service;
+package com.example.demo.service.implementation;
 
 import com.example.demo.dto.rental.RentalDto;
 import com.example.demo.dto.rental.RentalRequestDto;
 import com.example.demo.dto.rental.ReturnDto;
 import com.example.demo.exception.EntityNotFoundException;
+import com.example.demo.exception.RentalProcessingException;
 import com.example.demo.mapper.RentalMapper;
 import com.example.demo.model.Car;
 import com.example.demo.model.Rental;
 import com.example.demo.model.User;
 import com.example.demo.repository.CarRepository;
 import com.example.demo.repository.RentalRepository;
+import com.example.demo.service.NotificationService;
+import com.example.demo.service.RentalService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +38,7 @@ public class RentalServiceImpl implements RentalService {
                         + requestDto.getCarId() + " because it does not exist")
         );
         if (car.getInventory() < 1) {
-            throw new RuntimeException("Sorry, there are not enough free"
+            throw new RentalProcessingException("Sorry, there are not enough free"
                     + " cars, choose another model");
         }
         car.setInventory(car.getInventory() - 1);
@@ -44,17 +47,7 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = rentalMapper.toModel(requestDto, user, car);
         rentalRepository.save(rental);
 
-        String message = String.format("""
-                        🚗 *New Rental Created*
-                        
-                        *Car*: %s
-                        *User ID*: %d
-                        *Rental Date*: %s
-                        *Return Date*: %s""",
-                requestDto.getCarId(), user.getId(), requestDto.getRentalDate(),
-                requestDto.getReturnDate());
-
-        notificationService.sendNotification(message, Long.parseLong(telegramChatIdMember));
+        notificationService.sendRentalNotification(rental);
 
         return rentalMapper.toDto(rental);
     }
@@ -84,7 +77,7 @@ public class RentalServiceImpl implements RentalService {
                 new EntityNotFoundException("Rental not found or does not belong to the user")
         );
         if (rental.getActualReturnDate() != null) {
-            throw new RuntimeException("The actual date is already set");
+            throw new RentalProcessingException("The actual date is already set");
         }
 
         Car car = rental.getCar();
