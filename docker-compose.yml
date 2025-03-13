@@ -29,7 +29,7 @@ services:
       - "$DEBUG_PORT:$DEBUG_PORT"
     environment:
       SPRING_APPLICATION_JSON: '{
-        "spring.datasource.url": "$DB_URL_ADDRESS",
+        "spring.datasource.url": "$CONTAINER_DB_URL_ADDRESS",
         "spring.datasource.username": "$MYSQLDB_USER",
         "spring.datasource.password": "$MYSQLDB_ROOT_PASSWORD",
         "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.MySQLDialect"

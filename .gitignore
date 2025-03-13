@@ -35,5 +35,3 @@ build/
 # Docker-specific
 .env
 
-# Application configuration files
-src/main/resources/application.properties
