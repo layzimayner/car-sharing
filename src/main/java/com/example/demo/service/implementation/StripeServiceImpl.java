@@ -1,8 +1,10 @@
-package com.example.demo.service;
+package com.example.demo.service.implementation;
 
+import com.example.demo.exception.StripeSessionException;
 import com.example.demo.model.Payment;
 import com.example.demo.model.Rental;
 import com.example.demo.repository.PaymentRepository;
+import com.example.demo.service.StripeService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -84,9 +86,8 @@ public class StripeServiceImpl implements StripeService {
                     paymentRepository.save(payment);
                 }
             } catch (StripeException e) {
-                throw new RuntimeException(
-                        "Failed to retrieve Stripe session for payment ID"
-                                + payment.getId(), e);
+                throw new StripeSessionException("Failed to retrieve Stripe session for payment ID "
+                        + payment.getId(), e);
             }
         }
     }

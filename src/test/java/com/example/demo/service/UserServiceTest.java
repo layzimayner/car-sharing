@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.example.demo.service.implementation.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,7 @@ public class UserServiceTest {
     @Test
     @DisplayName("Check save service with valid request")
     void save_ValidRequest_returnUserDto() throws RegistrationException {
+        //Given
         User model = createModel();
         UserRegistrationRequestDto request = createRequest();
         UserRegistrationDto expect = createRegistrationDto();
@@ -64,14 +66,17 @@ public class UserServiceTest {
         when(userMapper.toDto(any())).thenReturn(createRegistrationDto());
         when(passwordEncoder.encode(any())).thenReturn(TEST_USER_PASSWORD);
 
+        //When
         UserRegistrationDto actual = userService.save(request);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check updateRoles service with valid request")
     void updateRoles_ValidRequest_returnUserDto() throws RegistrationException {
+        //Given
         User model = createModel();
         RoleRequestDto request = new RoleRequestDto(Set.of(1L, 2L));
         UserWithRoleDto expect = createDtoWithRoles();
@@ -82,27 +87,33 @@ public class UserServiceTest {
         when(userRepository.save(any())).thenReturn(model);
         when(userMapper.toModelWithRoles(any())).thenReturn(expect);
 
+        //When
         UserWithRoleDto actual = userService.updateRoles(request, TEST_USER_ID);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check findInfo service with valid request")
     void findInfo_ValidRequest_returnUserDto() throws RegistrationException {
+        //Given
         User model = createModel();
         UserRegistrationDto expect = createRegistrationDto();
 
         when(userMapper.toDto(any())).thenReturn(expect);
 
+        //When
         UserRegistrationDto actual = userService.findInfo(model);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 
     @Test
     @DisplayName("Check updateProfile service with valid request")
     void updateProfile_ValidRequest_returnUserDto() throws RegistrationException {
+        //Given
         User model = createModel();
         UserRegistrationRequestDto request = createRequest();
         UserRegistrationDto expect = createRegistrationDto();
@@ -112,8 +123,10 @@ public class UserServiceTest {
         when(userRepository.save(any())).thenReturn(model);
         when(userMapper.toDto(any())).thenReturn(expect);
 
+        //When
         UserRegistrationDto actual = userService.updateProfile(model, request);
 
+        //Then
         Assertions.assertEquals(actual, expect);
     }
 

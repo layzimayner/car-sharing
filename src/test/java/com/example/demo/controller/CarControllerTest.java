@@ -45,7 +45,7 @@ public class CarControllerTest {
     private static final String DEFAULT_CAR_BRAND = "Opel";
     private static final int DEFAULT_CAR_INVENTORY = 1;
     private static final int UPDATED_CAR_INVENTORY = 2;
-    private static final BigDecimal DEFAULT_CAR_DAILY_FEE = BigDecimal.valueOf(200.0);
+    private static final BigDecimal DEFAULT_CAR_DAILY_FEE = new BigDecimal("200.00");
     private static final Car.Type DEFAULT_CAR_TYPE = Car.Type.SEDAN;
     private static final int EXPECTED_LENGTH = 3;
     private static final String PAGE_PARAM_NAME = "page";
@@ -101,12 +101,14 @@ public class CarControllerTest {
     @Test
     @DisplayName("Check createCar endpoint by valid request")
     void createCar_validRequestDto_ReturnCarDto() throws Exception {
+        //Given
         CreateCarDto requestDto = createDefaultCreateCarDto();
 
         CarDto expect = createDefaultCarDto();
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(post("/cars")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -115,7 +117,7 @@ public class CarControllerTest {
 
         CarDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), CarDto.class);
         Assertions.assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expect, actual);
+        Assertions.assertEquals(expect, actual);
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
@@ -123,6 +125,7 @@ public class CarControllerTest {
     @DisplayName("Check functionality of getAllCars method")
     void getAllCars_DbWithData_ReturnPageOfCarDto()
             throws Exception {
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/cars")
                         .param(PAGE_PARAM_NAME, PAGE_PARAM_VALUE)
                         .param(SIZE_PARAM_NAME, SIZE_PARAM_VALUE)
@@ -147,6 +150,7 @@ public class CarControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of deleteCar method")
     void deleteCar_ValidData_ReturnNoContentStatus() throws Exception {
+        //When
         mockMvc.perform(MockMvcRequestBuilders.delete("/cars/{id}", DEFAULT_CAR_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
@@ -160,12 +164,14 @@ public class CarControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of updateCar method")
     void update_ValidData_ReturnCarDto() throws Exception {
+        //Given
         CreateCarDto requestDto = createDefaultCreateCarDto();
 
         CarDto expect = createDefaultCarDto();
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/cars/{id}", DEFAULT_CAR_ID)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -174,15 +180,16 @@ public class CarControllerTest {
 
         CarDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), CarDto.class);
         Assertions.assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expect, actual);
+        Assertions.assertEquals(expect, actual);
     }
 
     @WithMockUser(username = "user", authorities = {"ADMIN"})
     @Test
-    @Sql(scripts = "classpath:database/scripts/car/insert-car.sql",
+    @Sql(scripts = "classpath:database/scripts/car/insert-default-car.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @DisplayName("Check functionality of updateCar method")
     void updateInventory_ValidData_ReturnCarDto() throws Exception {
+        //Given
         UpdateInventoryDto updateDto = new UpdateInventoryDto();
         updateDto.setCarId(DEFAULT_CAR_ID);
         updateDto.setQuantity(UPDATED_CAR_INVENTORY);
@@ -192,6 +199,7 @@ public class CarControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(updateDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/cars")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -200,7 +208,7 @@ public class CarControllerTest {
 
         CarDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), CarDto.class);
         Assertions.assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expect, actual);
+        Assertions.assertEquals(expect, actual);
     }
 
     @WithMockUser(username = "user", authorities = {"USER"})
@@ -209,8 +217,10 @@ public class CarControllerTest {
     @Sql(scripts = "classpath:database/scripts/car/insert-default-car.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findCarById_ValidId_ReturnCarDto() throws Exception {
+        //Given
         CarDto expect = createDefaultCarDto();
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/cars/{id}", DEFAULT_CAR_ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -218,7 +228,7 @@ public class CarControllerTest {
 
         CarDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), CarDto.class);
         Assertions.assertNotNull(actual);
-        EqualsBuilder.reflectionEquals(expect, actual);
+        Assertions.assertEquals(expect, actual, "dailyFee");
     }
 
     private CarDto createDefaultCarDto() {

@@ -14,7 +14,9 @@ public class CreateCarDto {
     @NotBlank
     private String brand;
     @Positive
+    @NotNull
     private int inventory;
+    @NotNull
     @Positive
     private BigDecimal dailyFee;
     @NotNull

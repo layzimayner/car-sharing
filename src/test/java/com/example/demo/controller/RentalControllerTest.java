@@ -114,6 +114,7 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Check functionality of rentCar method")
     void rentCar_ValidData_RentalDto() throws Exception {
+        //Given
         User user = createUser();
 
         RentalRequestDto requestDto = new RentalRequestDto();
@@ -126,6 +127,7 @@ public class RentalControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/rentals")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -137,6 +139,7 @@ public class RentalControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         RentalDto actualResponse = objectMapper.readValue(jsonResponse, RentalDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
         Assertions.assertEquals(expected, actualResponse);
     }
@@ -144,8 +147,10 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Check functionality of rentCar method")
     void getRentals_ValidData_Page() throws Exception {
+        //Given
         User user = createUser();
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/rentals")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -161,6 +166,7 @@ public class RentalControllerTest {
                 new TypeReference<List<RentalDto>>() {}
         );
 
+        //Then
         Assertions.assertNotNull(actualContent);
         Assertions.assertFalse(actualContent.isEmpty());
         Assertions.assertEquals(EXPECTED_LENGTH, actualContent.size());
@@ -169,6 +175,7 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Check functionality of getRentalById method")
     void getRentalById_ValidData_RentalDto(@Autowired DataSource dataSource) throws Exception {
+        //Given
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
@@ -179,6 +186,7 @@ public class RentalControllerTest {
 
         RentalDto expected = createRentalDto();
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/rentals/{id}", TEST_RETURN_ID)
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -189,6 +197,7 @@ public class RentalControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         RentalDto actualResponse = objectMapper.readValue(jsonResponse, RentalDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
         Assertions.assertEquals(expected, actualResponse);
     }
@@ -196,6 +205,7 @@ public class RentalControllerTest {
     @Test
     @DisplayName("Check functionality of returnCar method")
     void returnCar_ValidData_RentalDto(@Autowired DataSource dataSource) throws Exception {
+        //Given
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(connection,
@@ -212,6 +222,7 @@ public class RentalControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(returnDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/rentals/{id}", TEST_RETURN_ID)
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -223,6 +234,7 @@ public class RentalControllerTest {
         String jsonResponse = result.getResponse().getContentAsString();
         RentalDto actualResponse = objectMapper.readValue(jsonResponse, RentalDto.class);
 
+        //Then
         Assertions.assertNotNull(actualResponse);
         Assertions.assertEquals(expected, actualResponse);
     }

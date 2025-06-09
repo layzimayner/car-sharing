@@ -42,6 +42,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return e.getDefaultMessage();
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RentalProcessingException.class)
+    public ResponseEntity<String> handleRentalProcessingException(RentalProcessingException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotExpiredPaymentException.class)
+    public ResponseEntity<String> handleNotExpiredPaymentException(NotExpiredPaymentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<String> handleRegistrationException(RegistrationException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());

@@ -104,8 +104,10 @@ public class PaymentControllerTest {
     @Test
     @DisplayName("Check functionality of getAllPayments method")
     void getAllPayments_ValidData_Page() throws Exception {
+        //Given
         User user = createUser();
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/payments")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
@@ -129,6 +131,7 @@ public class PaymentControllerTest {
     @Test
     @DisplayName("Check functionality of createPayment method")
     void createPayment_ValidData_RentalDto() throws Exception {
+        //Given
         User user = createUser();
 
         PaymentRequestDto requestDto = new PaymentRequestDto(TEST_RENTAL_ID, TEST_PAYMENT_TYPE);
@@ -137,6 +140,7 @@ public class PaymentControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //When
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/payments")
                         .with(authentication(new UsernamePasswordAuthenticationToken(
                                 user, null, user.getAuthorities())))
